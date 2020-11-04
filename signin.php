@@ -1,116 +1,71 @@
 <?php
 require 'includes/header.php';
 require 'includes/navbar.php';
+require 'includes/functions.php';
 
-if (!empty($_POST['submit_signup']) && !empty($_POST['email_signup']) && !empty($_POST['password1_signup'])) {
+if (!empty($_POST['submit_signup']) && !empty($_POST['email_signup']) && !empty($_POST['password1_signup']) && !empty($_POST['firstname_signup'])
+    && !empty($_POST['lastname_signup'])) {
     $pass_su = htmlspecialchars($_POST['password1_signup']);
     $repass_su = htmlspecialchars($_POST['password2_signup']);
     $email_su = htmlspecialchars($_POST['email_signup']);
-
-    $sql = "SELECT * FROM users WHERE email = '{$email_su}'";
-    $res = $conn->query($sql);
-    $count = $res->fetchColumn();
-    if (!$count) {
-        if ($pass_su === $repass_su) {
-            try {
-                $pass_su = password_hash($pass_su, PASSWORD_DEFAULT);
-                $sth = $conn->prepare('INSERT INTO users (email, password) VALUES (:email, :password)');
-                $sth->bindValue('email', $email_su);
-                $sth->bindValue('password', $pass_su);
-                $sth->execute();
-                echo '<div class="notification is-success">
-  <button class="delete"></button>
-  Utilisateur bien enregistré
-</div>';
-            } catch (PDOException $e) {
-                echo 'Error' . $e->getMessage();
-            }
-        } else {
-            echo '<div class="notification is-danger">
-  <button class="delete"></button>
-  Les mots de passe ne concordent pas
-</div>';
-        }
-    } elseif ($count > 0) {
-        echo '<div class="notification is-danger">
-  <button class="delete"></button>
-    Cette adresse email est déja enregistré
-        </div>';
-    }
+    $firstname = htmlspecialchars($_POST['firstname_signup']);
+    $lastname = htmlspecialchars($_POST['lastname_signup']);
+    inscription($email_su, $pass_su, $repass_su, $firstname, $lastname);
 }
+
 if (!empty($_POST['submit_login']) && !empty($_POST['email_login']) && !empty($_POST['password_login'])) {
     $pass_login = htmlspecialchars($_POST['password_login']);
     $email_login = htmlspecialchars($_POST['email_login']);
-
-    $sql = "SELECT * FROM users WHERE email = '{$email_login}'";
-    $res = $conn->query($sql);
-    var_dump($res);
-    $count = $res->fetchColumn();
-    var_dump($count);
-    $user = $res->fetch(PDO::FETCH_ASSOC);
-    var_dump($user);
-    if ($user) {
-        $db_pass = $user['password'];
-        if (password_verify($pass_login, $db_pass)) {
-            $_SESSION['email'] = $user['email'];
-            $_SESSION['id'] = $user['id'];
-        } else {
-            echo '<div class="notification is-danger">
-  <button class="delete"></button>
-  Mot de passe erroné
-</div>';
-        }
-    }
+    connexion($email_login, $pass_login);
 }
 ?>
-
     <div class="container">
         <div class="columns">
             <div class="column">
                 <form action="signin.php" method="post">
                     <div class="field">
-                        <label class="label">Email</label>
+                        <label class="label" for="email_signup">Email</label>
                         <div class="control has-icons-left has-icons-right">
-                            <input class="input is-danger" type="email" placeholder="Type your email" value=""
+                            <input class="input" id="email_signup" type="email" placeholder="Type your email" value=""
                                    name="email_signup">
-                            <span class="icon is-small is-left">
-      <i class="fas fa-envelope"></i>
-    </span>
-                            <span class="icon is-small is-right">
-      <i class="fas fa-exclamation-triangle"></i>
-    </span>
+                            <span class="icon is-small is-left"><i class="fas fa-envelope"></i></span>
+                            <span class="icon is-small is-right"><i class="fas fa-exclamation-triangle"></i></span>
                         </div>
 
                     </div>
 
                     <div class="field">
-                        <label class="label">Password</label>
+                        <label class="label" for="firstname_signup">First Name</label>
+                        <div class="control has-icons-left has-icons-right">
+                            <input class="input" id="firstname_signup" type="text" placeholder="Enter your name"
+                                   value=""
+                                   name="firstname_signup">
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label class="label" for="lastname_signup">Last Name</label>
+                        <div class="control has-icons-left has-icons-right">
+                            <input class="input" id="lastname_signup" type="text" placeholder="Enter your Lastname"
+                                   value=""
+                                   name="lastname_signup">
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label for="password1" class="label">Password</label>
                         <div class="control has-icons-left has-icons-right">
                             <input class="input" type="password" placeholder="Chose a password" value=""
-                                   name="password1_signup">
-                            <span class="icon is-small is-left">
-      <i class="fas fa-envelope"></i>
-    </span>
-                            <span class="icon is-small is-right">
-      <i class="fas fa-exclamation-triangle"></i>
-    </span>
+                                   name="password1_signup" id="password1">
                         </div>
-
                     </div>
 
                     <div class="field">
-                        <label class="label">Re-enter your password</label>
+                        <label for="password2" class="label">Confirm your password</label>
                         <div class="control has-icons-left has-icons-right">
                             <input class="input" type="password" placeholder="Re-enter your password" value=""
-                                   name="password2_signup">
-                            <span class="icon is-small is-left">
-      <i class="fas fa-envelope"></i>
-    </span>
-                            <span class="icon is-small is-right">
-      <i class="fas fa-exclamation-triangle"></i>
-    </span>
+                                   name="password2_signup" id="password2">
                         </div>
-
                     </div>
 
                     <div class="field">
@@ -129,36 +84,27 @@ if (!empty($_POST['submit_login']) && !empty($_POST['email_login']) && !empty($_
                     </div>
                 </form>
             </div>
+
             <div class="column">
                 <form action="signin.php" method="post">
                     <div class="field">
                         <label class="label">Email</label>
                         <div class="control has-icons-left has-icons-right">
-                            <input class="input is-danger" type="email" placeholder="Type your email" value=""
+                            <input class="input" type="email" placeholder="Type your email" value=""
                                    name="email_login">
-                            <span class="icon is-small is-left">
-      <i class="fas fa-envelope"></i>
-    </span>
-                            <span class="icon is-small is-right">
-      <i class="fas fa-exclamation-triangle"></i>
-    </span>
+                            <span class="icon is-small is-left"><i class="fas fa-envelope"></i></span>
+                            <span class="icon is-small is-right"><i class="fas fa-exclamation-triangle"></i></span>
                         </div>
 
                     </div>
 
                     <div class="field">
-                        <label class="label">Password</label>
+                        <label class="label" for="passwordLogin">Password</label>
                         <div class="control has-icons-left has-icons-right">
-                            <input class="input" type="password" placeholder="Chose a password" value=""
+                            <input class="input" id="passwordLogin" type="password" placeholder="Chose a password"
+                                   value=""
                                    name="password_login">
-                            <span class="icon is-small is-left">
-      <i class="fas fa-envelope"></i>
-    </span>
-                            <span class="icon is-small is-right">
-      <i class="fas fa-exclamation-triangle"></i>
-    </span>
                         </div>
-
                     </div>
 
 
@@ -171,7 +117,6 @@ if (!empty($_POST['submit_login']) && !empty($_POST['email_login']) && !empty($_
             </div>
         </div>
     </div>
-
 
 <?php
 require 'includes/footer.php';

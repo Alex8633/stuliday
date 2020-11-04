@@ -25,7 +25,6 @@ require 'includes/navbar.php';
 //}
 //echo $content;
 ?>
-
  <section class="hero is-medium is-primary">
    <div class="hero-body">
      <div class="container">
