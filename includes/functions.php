@@ -1,6 +1,7 @@
 <?php
 
-function inscription($email, $password1, $password2, $firstname, $lastname) {
+function inscription($email, $password1, $password2, $firstname, $lastname)
+{
     global $conn;
     $sql = "SELECT * FROM users WHERE email = '{$email}'";
     $res = $conn->query($sql);
@@ -43,8 +44,7 @@ function connexion($email, $password)
                 $_SESSION['nom'] = $user['nom'];
                 $_SESSION['prenom'] = $user['prenom'];
                 echo 'Vous êtes connectés !';
-                header('Location: index.php');
-                var_dump($_SESSION);
+                header('Location: profile.php');
             } else {
                 echo '<div class="alert alert-danger" role="alert">Le mot de passe est éronné !</div>';
                 unset($_POST);
@@ -56,4 +56,74 @@ function connexion($email, $password)
     } catch (PDOException $e) {
         echo 'Error ' . $e->getMessage();
     }
+}
+
+function addAnnonce($title, $content, $city, $address, $price)
+{
+    global $conn;
+    try {
+
+        $sth = $conn->prepare("INSERT INTO adverts (title, content, city, address, price, author) 
+                VALUES (:title, :content, :city, :address, :price, :author)");
+
+        $sth->bindValue(':title', $title);
+        $sth->bindValue(':content', $content);
+        $sth->bindValue(':city', $city);
+        $sth->bindValue(':address', $address);
+        $sth->bindValue(':price', $price);
+        $sth->bindValue(':author', $_SESSION['id']);
+
+        if ($sth->execute()) {
+            header('Location: advertAdd.php');
+        };
+
+    } catch (PDOException $e) {
+        echo 'Error' . $e->getMessage();
+    }
+}
+
+
+
+function showAnnonces()
+{
+    global $conn;
+    $sth = $conn->prepare('SELECT * ');
+    $sth->execute();
+    $products = $sth->fetchAll(PDO::FETCH_ASSOC);
+    foreach ($products as $product) {
+        ?>
+        <tr>
+            <th scope="row"><?php echo $product['products_id']; ?>
+            </th>
+            <td><?php echo $product['name']; ?>
+            </td>
+            <td><?php echo $product['description']; ?>
+            </td>
+            <td><?php echo $product['ville']; ?>
+            </td>
+            <td><?php echo $product['price']; ?>
+            </td>
+            <td><?php echo $product['categories_name']; ?>
+            </td>
+            <td><?php echo $product['username']; ?>
+            </td>
+            <td>
+                <a
+                    href="product.php/?id=<?php echo $product['products_id']; ?>">Afficher
+                    article</a>
+            </td>
+        </tr>
+        <?php
+    }
+}
+
+function showAnnonce($id)
+{
+    global $conn;
+    $sth = $conn->prepare("SELECT * 
+                                    FROM adverts
+                                    WHERE ad_id = $id");
+    $sth->execute();
+    $annonce = $sth->fetch(PDO::FETCH_ASSOC);
+    var_dump($annonce);
 }

@@ -1,4 +1,5 @@
 <?php
+$title = "Stuliday - Profile";
 require 'includes/header.php';
 require 'includes/navbar.php';
 ?>
@@ -26,7 +27,7 @@ require 'includes/navbar.php';
         <div class="column">
             <div class="buttons">
                 <a class="button is-link">Modifier mon profil</a>
-                <a class="button is-link">Publier une nouvelle annonce</a>
+                <a class="button is-link" href="addAnnonce.php">Add Advert</a>
             </div>
             <div class="buttons">
                 <a class="button is-link">Voir mes annonces</a>
