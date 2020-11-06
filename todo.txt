@@ -1,6 +1,6 @@
 rendre page profile dynamique
 ajout formulaire ajout annonce
-ajout d'une annonce dasn la database
+ajout d'une annonce dans la database
 ========================================
 afficher toute les annonces
 afficher toute les annonces relative a un profil

@@ -58,31 +58,40 @@ function connexion($email, $password)
     }
 }
 
-function addAnnonce($title, $content, $city, $address, $price)
+function addAnnonce($title, $content, $city, $address, $price, $dateBegin, $dateEnd, $placeNumber)
 {
     global $conn;
-    try {
 
-        $sth = $conn->prepare("INSERT INTO adverts (title, content, city, address, price, author) 
-                VALUES (:title, :content, :city, :address, :price, :author)");
 
-        $sth->bindValue(':title', $title);
-        $sth->bindValue(':content', $content);
-        $sth->bindValue(':city', $city);
-        $sth->bindValue(':address', $address);
-        $sth->bindValue(':price', $price);
-        $sth->bindValue(':author', $_SESSION['id']);
+    if ($price > 0 && $price < 1000) {
+        if ($placeNumber > 0 && $placeNumber <= 10) {
+            try {
 
-        if ($sth->execute()) {
-            header('Location: advertAdd.php');
-        };
+                $sth = $conn->prepare("INSERT INTO adverts (title, content, city, address, price, author, datedebut, datefin, places) 
+                VALUES (:title, :content, :city, :address, :price, :author, :datedebut, :datefin, :places)");
 
-    } catch (PDOException $e) {
-        echo 'Error' . $e->getMessage();
+                $sth->bindValue(':title', $title);
+                $sth->bindValue(':content', $content);
+                $sth->bindValue(':city', $city);
+                $sth->bindValue(':address', $address);
+                $sth->bindValue(':price', $price);
+                $sth->bindValue(':datedebut', $dateBegin);
+                $sth->bindValue(':datefin', $dateEnd);
+                $sth->bindValue(':places', $placeNumber);
+                $sth->bindValue(':author', $_SESSION['id']);
+                if ($sth->execute()) {
+                    header('Location: advertAdd.php');
+                };
+            } catch (PDOException $e) {
+                echo 'Error' . $e->getMessage();
+            }
+        } else {
+            header('Location: addAnnonce.php?error=places');
+        }
+    } else {
+        header('Location: addAnnonce.php?error=price');
     }
 }
-
-
 
 function showAnnonces()
 {
@@ -109,7 +118,7 @@ function showAnnonces()
             </td>
             <td>
                 <a
-                    href="product.php/?id=<?php echo $product['products_id']; ?>">Afficher
+                        href="product.php/?id=<?php echo $product['products_id']; ?>">Afficher
                     article</a>
             </td>
         </tr>

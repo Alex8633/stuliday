@@ -11,8 +11,8 @@ echo '<div class="notification is-primary">
 
     <div class="container mb-4">
         <div class="buttons">
-            <a class="button is-link">go to Profil</a>
-            <a class="button is-link">go to Annonces</a>
+            <a class="button is-link" href="profile.php">go to Profil</a>
+            <a class="button is-link" href="viewAnnonces.php">go to Annonces</a>
         </div>
     </div>
 
