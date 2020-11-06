@@ -1,0 +1,45 @@
+/* style des annonces */
+
+.card-annonce {
+    display: flex;
+    justify-content: center;
+}
+
+.card-annonce:not(:last-child) {
+    margin-bottom: 2rem;
+}
+
+.card-annonce h2 {
+    color: white;
+}
+
+.card-annonce-image {
+    width: 20%;
+}
+
+.card-annonce-content {
+    width: 50%;
+    padding: 0.5rem 1rem;
+    background: #00b89c;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.annonce-lien {
+    padding: 0 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 20%;
+}
+
+.img-responsive {
+    width: 100%;
+    height: auto;
+}
+
+.card-annonce-image img {
+    max-height: 150px;
+    width: auto;
+}

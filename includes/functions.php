@@ -96,32 +96,26 @@ function addAnnonce($title, $content, $city, $address, $price, $dateBegin, $date
 function showAnnonces()
 {
     global $conn;
-    $sth = $conn->prepare('SELECT * ');
+    $sth = $conn->prepare('SELECT * FROM adverts');
     $sth->execute();
-    $products = $sth->fetchAll(PDO::FETCH_ASSOC);
-    foreach ($products as $product) {
+    $adverts = $sth->fetchAll(PDO::FETCH_ASSOC);
+    foreach ($adverts as $advert) {
         ?>
-        <tr>
-            <th scope="row"><?php echo $product['products_id']; ?>
-            </th>
-            <td><?php echo $product['name']; ?>
-            </td>
-            <td><?php echo $product['description']; ?>
-            </td>
-            <td><?php echo $product['ville']; ?>
-            </td>
-            <td><?php echo $product['price']; ?>
-            </td>
-            <td><?php echo $product['categories_name']; ?>
-            </td>
-            <td><?php echo $product['username']; ?>
-            </td>
-            <td>
-                <a
-                        href="product.php/?id=<?php echo $product['products_id']; ?>">Afficher
-                    article</a>
-            </td>
-        </tr>
+        <div class="card-annonce">
+            <div class="card-annonce-image">
+                <img class="img-responsive" src="images/placeholder.png" alt="maison">
+            </div>
+            <div class="card-annonce-content">
+                <div class="annonce-title"><h2 class="subtitle is-2"><?php echo $advert['title'] ?></h2></div>
+                <div class="annonce-city"><h2 class="subtitle is-3"><?php echo $advert['city'] ?></h2></div>
+                <div class="annonce-price"><h2 class="subtitle is-4"><?php echo $advert['price'] . '€' ?></h2></div>
+                <div class="annonce-dates"> <?php echo $advert['datedebut'] ?></div>
+            </div>
+            <div class="annonce-lien">
+                <a href="viewAnnonce.php/?id=<?php echo $advert['ad_id']; ?>" class="button is-primary">show Annonce</a>
+            </div>
+        </div>
+
         <?php
     }
 }

@@ -2,13 +2,12 @@
 $title = "Stuliday - Annonces";
 require 'includes/header.php';
 require 'includes/navbar.php';
+require 'includes/functions.php'
 ?>
 
-<div class="container">
-    <figure class="image is-4by3">
-        <img src="images/maison-cubique-noir-blanc-moderne-nantes.jpg" alt="house">
-    </figure>
-</div>
+    <div class="container">
+       <?php showAnnonces(); ?>
+    </div>
 
 <?php
 require 'includes/footer.php';

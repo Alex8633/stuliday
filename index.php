@@ -37,9 +37,9 @@ require 'includes/navbar.php';
                             Come to discover our places to stay, or you can even add your own !
                         </h2>
                         <?php if (!empty($_SESSION)) { ?>
-                            <a href="profile.php" class="button is-link">Go to your Profil</a>
+                            <a href="profile.php" class="button is-success">Go to your Profil</a>
                         <?php } else { ?>
-                            <a href="signin.php" class="button is-link">Connectez vous pour reserver</a>
+                            <a href="signin.php" class="button is-success">Connectez vous pour reserver</a>
                         <?php } ?>
 
                     </div>
