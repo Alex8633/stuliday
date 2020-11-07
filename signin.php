@@ -1,18 +1,14 @@
 <?php
+$title = 'Stuliday -- Inscription';
 require 'includes/header.php';
 require 'includes/navbar.php';
 require 'includes/functions.php';
 
-
-if (!empty($_POST['submit_login']) && !empty($_POST['email_login']) && !empty($_POST['password_login'])) {
-    $pass_login = htmlspecialchars($_POST['password_login']);
-    $email_login = htmlspecialchars($_POST['email_login']);
-    connexion($email_login, $pass_login);
-}
 ?>
     <div class="container">
         <div class="columns">
             <div class="column">
+                <h2 class="subtitle is-3">Inscription</h2>
                 <form action="process.php" method="post">
                     <div class="field">
                         <label class="label" for="email_signup">Email</label>
@@ -76,7 +72,8 @@ if (!empty($_POST['submit_login']) && !empty($_POST['email_login']) && !empty($_
             </div>
 
             <div class="column">
-                <form action="signin.php" method="post">
+                <h2 class="subtitle is-3">Connection</h2>
+                <form action="process.php" method="post">
                     <div class="field">
                         <label class="label">Email</label>
                         <div class="control has-icons-left has-icons-right">
@@ -91,7 +88,7 @@ if (!empty($_POST['submit_login']) && !empty($_POST['email_login']) && !empty($_
                     <div class="field">
                         <label class="label" for="passwordLogin">Password</label>
                         <div class="control has-icons-left has-icons-right">
-                            <input class="input" id="passwordLogin" type="password" placeholder="Chose a password"
+                            <input class="input" id="passwordLogin" type="password" placeholder="Enter your password"
                                    value=""
                                    name="password_login">
                         </div>
@@ -115,6 +112,8 @@ if (!empty($_POST['submit_login']) && !empty($_POST['email_login']) && !empty($_
         echo '<div class="notification is-danger"><button class="delete"></button>Les mots de passe ne concordent pas</div>';
     } elseif ($result == 'errormail') {
         echo '<div class="notification is-danger"><button class="delete"></button>Cette adresse email est déja enregistré</div>';
+    } elseif ($result == 'errormailcon') {
+        echo '<div class="notification is-danger"><button class="delete"></button>this address email don\'t exist</div>';
     }
 } ?>
 

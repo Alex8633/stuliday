@@ -44,15 +44,12 @@ function connexion($email, $password)
                 $_SESSION['email'] = $user['email'];
                 $_SESSION['nom'] = $user['nom'];
                 $_SESSION['prenom'] = $user['prenom'];
-                echo 'Vous êtes connectés !';
                 header('Location: profile.php');
             } else {
-                echo '<div class="alert alert-danger" role="alert">Le mot de passe est éronné !</div>';
-                unset($_POST);
+                header('Location: signin.php?signin=errorpassword');
             }
         } else {
-            echo 'Le mail n\'est pas connu !';
-            unset($_POST);
+            header('Location: signin.php?signin=errormailcon');
         }
     } catch (PDOException $e) {
         echo 'Error ' . $e->getMessage();
@@ -62,15 +59,11 @@ function connexion($email, $password)
 function addAnnonce($title, $content, $city, $address, $price, $dateBegin, $dateEnd, $placeNumber)
 {
     global $conn;
-
-
     if ($price > 0 && $price < 1000) {
         if ($placeNumber > 0 && $placeNumber <= 10) {
             try {
-
                 $sth = $conn->prepare("INSERT INTO adverts (title, content, city, address, price, author, datedebut, datefin, places) 
                 VALUES (:title, :content, :city, :address, :price, :author, :datedebut, :datefin, :places)");
-
                 $sth->bindValue(':title', $title);
                 $sth->bindValue(':content', $content);
                 $sth->bindValue(':city', $city);
@@ -98,7 +91,7 @@ function addAnnonce($title, $content, $city, $address, $price, $dateBegin, $date
 function showAnnonces()
 {
     global $conn;
-    $sth = $conn->prepare('SELECT * FROM adverts');
+    $sth = $conn->prepare('SELECT a.*, u.nom, u.prenom FROM adverts AS a LEFT JOIN users u on a.author = u.id');
     $sth->execute();
     $adverts = $sth->fetchAll(PDO::FETCH_ASSOC);
     printAnnonces($adverts);
@@ -108,7 +101,10 @@ function showAnnonces()
 function showAnnoncesByUsuer($id)
 {
     global $conn;
-    $sth = $conn->prepare("SELECT * FROM adverts WHERE author = {$id}");
+    $sth = $conn->prepare("SELECT a.*, u.nom, u.prenom 
+                                    FROM adverts AS a 
+                                    LEFT JOIN users u on a.author = u.id 
+                                    WHERE author = {$id}");
     $sth->execute();
     $adverts = $sth->fetchAll(PDO::FETCH_ASSOC);
     printAnnonces($adverts);
@@ -128,17 +124,57 @@ function printAnnonces($adverts)
                                                style="color: black"><?php echo $advert['title'] ?></h2></div>
                 <div class="annonce-city"><h2 class="subtitle is-3"><?php echo $advert['city'] ?></h2></div>
                 <div class="annonce-price"><h2 class="subtitle is-4"><?php echo $advert['price'] . '€' ?></h2></div>
+                <div class="annonce-author">
+                    <h2 class="subtitle is-4"><?php echo $advert['nom'] . ' ' . $advert['prenom'] ?></h2></div>
                 <div class="annonce-dates"> Availability <?php echo $advert['datedebut'] ?>
                     to <?= $advert['datefin'] ?></div>
             </div>
             <div class="annonce-lien">
-                <a href="viewAnnonce.php/?id=<?php echo $advert['ad_id']; ?>" class="button is-primary">show Annonce</a>
-
+                <a href="viewAnnonce.php?id=<?php echo $advert['ad_id']; ?>" class="button is-primary">show Annonce</a>
+                <!-- affichage du bouton edit annonce seulement pour les annonces de l'utilisateur connecté -->
+                <?php if (!empty($_SESSION) && $advert['author'] == $_SESSION['id']) { ?>
+                    <a href="editAnnonce.php?id=<?php echo $advert['ad_id']; ?>" class="button is-primary">Edit
+                        Annonce</a>
+                <?php } ?>
             </div>
         </div>
         <?php
     }
 }
+
+// fonction de modification d'uen annonce
+function editAnnonce($title, $content, $city, $address, $price, $dateBegin, $dateEnd, $id, $placeNumber, $user_id)
+{
+    global $conn;
+    if ($price > 0 && $price < 1000) {
+        if ($placeNumber > 0 && $placeNumber <= 10) {
+            try {
+                $sth = $conn->prepare("UPDATE adverts SET title =:title, content =:content, city =:city, 
+                   address =:address, price =:price, author =:author, datedebut =:datedebut, datefin =:datefin, places =:places
+                    WHERE ad_id = $id AND author = $user_id");
+                $sth->bindValue(':title', $title);
+                $sth->bindValue(':content', $content);
+                $sth->bindValue(':city', $city);
+                $sth->bindValue(':address', $address);
+                $sth->bindValue(':price', $price);
+                $sth->bindValue(':datedebut', $dateBegin);
+                $sth->bindValue(':datefin', $dateEnd);
+                $sth->bindValue(':places', $placeNumber);
+                $sth->bindValue(':author', $_SESSION['id']);
+                if ($sth->execute()) {
+                    header('Location: viewAnnonces.php');
+                }
+            } catch (PDOException $e) {
+                echo 'Error' . $e->getMessage();
+            }
+        } else {
+            header("Location: editAnnonce.php?error=places&id={$id}");
+        }
+    } else {
+        header("Location: editAnnonce.php?error=price&id={$id}");
+    }
+}
+
 
 function showAnnonce($id)
 {

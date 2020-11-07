@@ -17,7 +17,7 @@
             <a class="navbar-item" href="index.php">
                 Home
             </a>
-            <a class="navbar-item">
+            <a class="navbar-item" href="viewAnnonces.php">
                 Places to stay
             </a>
         </div>

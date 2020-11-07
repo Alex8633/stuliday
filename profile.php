@@ -2,6 +2,10 @@
 $title = "Stuliday - Profile";
 require 'includes/header.php';
 require 'includes/navbar.php';
+$id = $_SESSION['id'];
+$sql = "SELECT profil_image FROM users WHERE id = {$id}";
+$res = $conn->query($sql);
+$imageProfil = $res->fetch(PDO::FETCH_ASSOC);
 ?>
 
 <div class="container">
@@ -13,12 +17,18 @@ require 'includes/navbar.php';
                     <div class="media">
                         <div class="media-left">
                             <figure class="image is-128x128 is-3by4">
-                                <img src="images/photoprofil.jpg" alt="image profile">
+                                <img src="<?php if ($imageProfil) {
+                                    echo $imageProfil['profil_image'];
+                                } else {
+                                    echo 'images/opinion-sin-imagen.png';
+                                } ?>"
+                                     alt="image profile">
                             </figure>
                         </div>
                         <div class="media-content has-text-centered">
-                            <p class="title is-4"><?= $_SESSION['prenom'] . ' ' . $_SESSION['nom'] ?></p>
-                            <p class="subtitle is-6"><?= $_SESSION['email'] ?></p>
+                            <p class="subtitle is-4">nom : <?= $_SESSION['nom'] ?></p>
+                            <p class="subtitle is-4">prenom : <?= $_SESSION['prenom'] ?></p>
+                            <p class="subtitle is-6">mail : <?= $_SESSION['email'] ?></p>
                         </div>
                     </div>
                 </div>
@@ -26,10 +36,11 @@ require 'includes/navbar.php';
         </div>
         <div class="column">
             <div class="buttons">
-                <a class="button is-link is-fullwidth">Edit profil</a>
+                <a class="button is-link is-fullwidth" href='editProfil.php?id=<?php echo $_SESSION['id'] ?>'>Edit
+                    profil</a>
                 <a class="button is-link is-fullwidth" href="addAnnonce.php">Add Advert</a>
-                <a class="button is-link is-fullwidth" href="viewAnnonces.php?id=<?php echo $_SESSION['id'] ?>">Voir mes
-                    annonces</a>
+                <a class="button is-link is-fullwidth" href="viewAnnonces.php?id=<?php echo $_SESSION['id'] ?>">See my
+                    ads</a>
                 <a class="button is-link is-fullwidth">Voir mes réservations</a>
             </div>
         </div>
