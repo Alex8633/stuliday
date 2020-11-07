@@ -15,16 +15,17 @@ function inscription($email, $password1, $password2, $firstname, $lastname)
                 $sth->bindValue('password', $pass_su);
                 $sth->bindValue('nom', $lastname);
                 $sth->bindValue('prenom', $firstname);
-                $sth->execute();
-                echo '<div class="notification is-success"><button class="delete"></button>Utilisateur bien enregistré</div>';
+                if ($sth->execute()) {
+                    header('Location: signin.php?signin=sucess');
+                }
             } catch (PDOException $e) {
                 echo 'Error' . $e->getMessage();
             }
         } else {
-            echo '<div class="notification is-danger"><button class="delete"></button>Les mots de passe ne concordent pas</div>';
+            header('Location: signin.php?signin=errorpassword');
         }
     } elseif ($count > 0) {
-        echo '<div class="notification is-danger"><button class="delete"></button>Cette adresse email est déja enregistré</div>';
+        header('Location: signin.php?signin=errormail');
     }
 }
 
@@ -93,12 +94,29 @@ function addAnnonce($title, $content, $city, $address, $price, $dateBegin, $date
     }
 }
 
+// Affiche toute les annonces posté sur le site
 function showAnnonces()
 {
     global $conn;
     $sth = $conn->prepare('SELECT * FROM adverts');
     $sth->execute();
     $adverts = $sth->fetchAll(PDO::FETCH_ASSOC);
+    printAnnonces($adverts);
+}
+
+// affiche les annonces par utilisateur en fonction de son id
+function showAnnoncesByUsuer($id)
+{
+    global $conn;
+    $sth = $conn->prepare("SELECT * FROM adverts WHERE author = {$id}");
+    $sth->execute();
+    $adverts = $sth->fetchAll(PDO::FETCH_ASSOC);
+    printAnnonces($adverts);
+}
+
+// création des cards annonces
+function printAnnonces($adverts)
+{
     foreach ($adverts as $advert) {
         ?>
         <div class="card-annonce">
@@ -106,16 +124,18 @@ function showAnnonces()
                 <img class="img-responsive" src="images/placeholder.png" alt="maison">
             </div>
             <div class="card-annonce-content">
-                <div class="annonce-title"><h2 class="subtitle is-2"><?php echo $advert['title'] ?></h2></div>
+                <div class="annonce-title"><h2 class="subtitle is-2"
+                                               style="color: black"><?php echo $advert['title'] ?></h2></div>
                 <div class="annonce-city"><h2 class="subtitle is-3"><?php echo $advert['city'] ?></h2></div>
                 <div class="annonce-price"><h2 class="subtitle is-4"><?php echo $advert['price'] . '€' ?></h2></div>
-                <div class="annonce-dates"> <?php echo $advert['datedebut'] ?></div>
+                <div class="annonce-dates"> Availability <?php echo $advert['datedebut'] ?>
+                    to <?= $advert['datefin'] ?></div>
             </div>
             <div class="annonce-lien">
                 <a href="viewAnnonce.php/?id=<?php echo $advert['ad_id']; ?>" class="button is-primary">show Annonce</a>
+
             </div>
         </div>
-
         <?php
     }
 }

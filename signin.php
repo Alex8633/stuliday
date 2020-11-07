@@ -3,15 +3,6 @@ require 'includes/header.php';
 require 'includes/navbar.php';
 require 'includes/functions.php';
 
-if (!empty($_POST['submit_signup']) && !empty($_POST['email_signup']) && !empty($_POST['password1_signup']) && !empty($_POST['firstname_signup'])
-    && !empty($_POST['lastname_signup'])) {
-    $pass_su = htmlspecialchars($_POST['password1_signup']);
-    $repass_su = htmlspecialchars($_POST['password2_signup']);
-    $email_su = htmlspecialchars($_POST['email_signup']);
-    $firstname = htmlspecialchars($_POST['firstname_signup']);
-    $lastname = htmlspecialchars($_POST['lastname_signup']);
-    inscription($email_su, $pass_su, $repass_su, $firstname, $lastname);
-}
 
 if (!empty($_POST['submit_login']) && !empty($_POST['email_login']) && !empty($_POST['password_login'])) {
     $pass_login = htmlspecialchars($_POST['password_login']);
@@ -22,7 +13,7 @@ if (!empty($_POST['submit_login']) && !empty($_POST['email_login']) && !empty($_
     <div class="container">
         <div class="columns">
             <div class="column">
-                <form action="signin.php" method="post">
+                <form action="process.php" method="post">
                     <div class="field">
                         <label class="label" for="email_signup">Email</label>
                         <div class="control has-icons-left has-icons-right">
@@ -31,7 +22,6 @@ if (!empty($_POST['submit_login']) && !empty($_POST['email_login']) && !empty($_
                             <span class="icon is-small is-left"><i class="fas fa-envelope"></i></span>
                             <span class="icon is-small is-right"><i class="fas fa-exclamation-triangle"></i></span>
                         </div>
-
                     </div>
 
                     <div class="field">
@@ -79,7 +69,7 @@ if (!empty($_POST['submit_login']) && !empty($_POST['email_login']) && !empty($_
 
                     <div class="field is-grouped">
                         <div class="control">
-                            <button name="submit_signup" class="button is-link" value="sigup">Submit</button>
+                            <button name="submit_signup" class="button is-link" value="signup">Submit</button>
                         </div>
                     </div>
                 </form>
@@ -107,7 +97,6 @@ if (!empty($_POST['submit_login']) && !empty($_POST['email_login']) && !empty($_
                         </div>
                     </div>
 
-
                     <div class="field is-grouped">
                         <div class="control">
                             <button name="submit_login" class="button is-link" value="login">Login !</button>
@@ -117,6 +106,17 @@ if (!empty($_POST['submit_login']) && !empty($_POST['email_login']) && !empty($_
             </div>
         </div>
     </div>
+
+<?php if (!empty($_GET)) {
+    $result = $_GET['signin'];
+    if ($result == 'sucess') {
+        echo '<div class="notification is-danger"><button class="delete"></button>registered user</div>';
+    } elseif ($result == 'errorpassword') {
+        echo '<div class="notification is-danger"><button class="delete"></button>Les mots de passe ne concordent pas</div>';
+    } elseif ($result == 'errormail') {
+        echo '<div class="notification is-danger"><button class="delete"></button>Cette adresse email est déja enregistré</div>';
+    }
+} ?>
 
 <?php
 require 'includes/footer.php';

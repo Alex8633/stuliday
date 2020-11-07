@@ -6,7 +6,12 @@ require 'includes/functions.php'
 ?>
 
     <div class="container">
-       <?php showAnnonces(); ?>
+        <?php if (empty($_GET)) {
+            showAnnonces();
+        } elseif (!empty($_GET)) {
+            $id = $_GET['id'];
+            showAnnoncesByUsuer($id);
+        } ?>
     </div>
 
 <?php

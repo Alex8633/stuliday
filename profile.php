@@ -5,10 +5,10 @@ require 'includes/navbar.php';
 ?>
 
 <div class="container">
-    <div class="columns">
+    <div class="columns is-desktop is-vcentered">
         <div class="column">
             <div class="card p-2">
-                <h2 class="title has-text-centered">Mon profil</h2>
+                <h2 class="title has-text-centered">Welcome <?= $_SESSION['prenom'] ?></h2>
                 <div class="card-content">
                     <div class="media">
                         <div class="media-left">
@@ -26,12 +26,11 @@ require 'includes/navbar.php';
         </div>
         <div class="column">
             <div class="buttons">
-                <a class="button is-link">Modifier mon profil</a>
-                <a class="button is-link" href="addAnnonce.php">Add Advert</a>
-            </div>
-            <div class="buttons">
-                <a class="button is-link">Voir mes annonces</a>
-                <a class="button is-link">Voir mes réservations</a>
+                <a class="button is-link is-fullwidth">Edit profil</a>
+                <a class="button is-link is-fullwidth" href="addAnnonce.php">Add Advert</a>
+                <a class="button is-link is-fullwidth" href="viewAnnonces.php?id=<?php echo $_SESSION['id'] ?>">Voir mes
+                    annonces</a>
+                <a class="button is-link is-fullwidth">Voir mes réservations</a>
             </div>
         </div>
     </div>
