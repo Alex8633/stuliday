@@ -5,8 +5,8 @@ ajout d'une annonce dans la database
 afficher toute les annonces [done]
 afficher toute les annonces relative a un profil [done]
 modifier cette annonce [done]
-affiché une annonce spécifiquement
 modification profile [near done]
-supression annonce
-assainir le code
+supression annonce [done]
 upload image on profil [done]
+assainir le code
+affiché une annonce spécifiquement

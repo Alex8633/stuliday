@@ -25,12 +25,12 @@
         <div class="navbar-end">
             <?php if (!empty($_SESSION)) {
                 ?>
-                <div class="navbar-item has-dropdown is-hoverable">
+                <div class="navbar-item has-dropdown is-hoverable ">
                     <a class="navbar-link">
                         <?php echo $_SESSION['prenom'] ?>
                     </a>
 
-                    <div class="navbar-dropdown">
+                    <div class="navbar-dropdown is-right">
                         <a class="navbar-item" href="profile.php">
                             Profile page
                         </a>

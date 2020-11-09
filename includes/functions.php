@@ -110,7 +110,7 @@ function showAnnoncesByUsuer($id)
     printAnnonces($adverts);
 }
 
-// création des cards annonces
+// création des "cards" annonces
 function printAnnonces($adverts)
 {
     foreach ($adverts as $advert) {
@@ -135,6 +135,8 @@ function printAnnonces($adverts)
                 <?php if (!empty($_SESSION) && $advert['author'] == $_SESSION['id']) { ?>
                     <a href="editAnnonce.php?id=<?php echo $advert['ad_id']; ?>" class="button is-primary">Edit
                         Annonce</a>
+                    <a href="suppAnnonce.php?id=<?php echo $advert['ad_id']; ?>" class="button is-danger">Delete
+                        Annonce</a>
                 <?php } ?>
             </div>
         </div>
@@ -142,7 +144,7 @@ function printAnnonces($adverts)
     }
 }
 
-// fonction de modification d'uen annonce
+// fonction de modification d'une annonce
 function editAnnonce($title, $content, $city, $address, $price, $dateBegin, $dateEnd, $id, $placeNumber, $user_id)
 {
     global $conn;
@@ -175,7 +177,7 @@ function editAnnonce($title, $content, $city, $address, $price, $dateBegin, $dat
     }
 }
 
-
+// affiche les informations pour une annonce
 function showAnnonce($id)
 {
     global $conn;
@@ -185,4 +187,56 @@ function showAnnonce($id)
     $sth->execute();
     $annonce = $sth->fetch(PDO::FETCH_ASSOC);
     var_dump($annonce);
+}
+
+function suppAdverts($user_id, $ad_id)
+{
+    // Récupération de la connexion à la BDD à partir de l'espace global.
+    global $conn;
+    // Tentative de la requête de suppression.
+    try {
+        $sth = $conn->prepare('DELETE FROM adverts WHERE ad_id = :adverts_id AND author =:user_id');
+        $sth->bindValue(':adverts_id', $ad_id);
+        $sth->bindValue(':user_id', $user_id);
+        if ($sth->execute()) {
+            header("Location:viewAnnonces.php?s&id={$user_id}");
+        }
+    } catch (PDOException $e) {
+        echo 'Error: ' . $e->getMessage();
+    }
+}
+
+// fonction pour les réservations
+function bookAdd($add_id, $user_id)
+{
+    global $conn;
+    try {
+        $sth = $conn->prepare("INSERT INTO reservations (users_id, adverts_id) VALUES (:user_id, :add_id)");
+        $sth->bindValue(':add_id', $add_id);
+        $sth->bindValue(':user_id', $user_id);
+        if ($sth->execute()) {
+            header('Location: profile.php?book=s');
+        }
+    } catch (PDOException $e) {
+        echo 'Error: ' . $e->getMessage();
+    }
+}
+
+//fonction qui affiche les réservation de l'utilisateur
+function showBook($id)
+{
+    global $conn;
+    try {
+        $sql = "SELECT a.*, r.users_id, r.reserv_id, u.id, u.nom, u.prenom
+        FROM adverts AS a 
+        LEFT JOIN reservations r ON a.ad_id = r.adverts_id
+        LEFT JOIN users u on r.users_id = u.id 
+        WHERE u.id = {$id}";
+        $sth = $conn->prepare($sql);
+        $sth->execute();
+        $adverts = $sth->fetchAll(PDO::FETCH_ASSOC);
+        printAnnonces($adverts);
+    } catch (PDOException $e) {
+        echo 'Error: ' . $e->getMessage();
+    }
 }

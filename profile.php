@@ -6,9 +6,12 @@ $id = $_SESSION['id'];
 $sql = "SELECT profil_image FROM users WHERE id = {$id}";
 $res = $conn->query($sql);
 $imageProfil = $res->fetch(PDO::FETCH_ASSOC);
+if (!empty($_GET['book'])) {
+    echo '<div class="notification is-success"><button class="delete"></button>Booking registred !</div>';
+}
 ?>
 
-<div class="container">
+<div class="container mb-2">
     <div class="columns is-desktop is-vcentered">
         <div class="column">
             <div class="card p-2">
@@ -17,7 +20,7 @@ $imageProfil = $res->fetch(PDO::FETCH_ASSOC);
                     <div class="media">
                         <div class="media-left">
                             <figure class="image is-128x128 is-3by4">
-                                <img src="<?php if ($imageProfil) {
+                                <img src="<?php if ($imageProfil['profil_image'] != null) {
                                     echo $imageProfil['profil_image'];
                                 } else {
                                     echo 'images/opinion-sin-imagen.png';
@@ -41,7 +44,9 @@ $imageProfil = $res->fetch(PDO::FETCH_ASSOC);
                 <a class="button is-link is-fullwidth" href="addAnnonce.php">Add Advert</a>
                 <a class="button is-link is-fullwidth" href="viewAnnonces.php?id=<?php echo $_SESSION['id'] ?>">See my
                     ads</a>
-                <a class="button is-link is-fullwidth">Voir mes réservations</a>
+                <a class="button is-link is-fullwidth"
+                   href="viewAnnonces.php?id=<?php echo $_SESSION['id'] ?>&book=book">See my
+                    reservations</a>
             </div>
         </div>
     </div>

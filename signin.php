@@ -5,7 +5,7 @@ require 'includes/navbar.php';
 require 'includes/functions.php';
 
 ?>
-    <div class="container">
+    <div class="container mb-2">
         <div class="columns">
             <div class="column">
                 <h2 class="subtitle is-3">Inscription</h2>
@@ -107,7 +107,7 @@ require 'includes/functions.php';
 <?php if (!empty($_GET)) {
     $result = $_GET['signin'];
     if ($result == 'sucess') {
-        echo '<div class="notification is-danger"><button class="delete"></button>registered user</div>';
+        echo '<div class="notification is-success"><button class="delete"></button>registered user</div>';
     } elseif ($result == 'errorpassword') {
         echo '<div class="notification is-danger"><button class="delete"></button>Les mots de passe ne concordent pas</div>';
     } elseif ($result == 'errormail') {

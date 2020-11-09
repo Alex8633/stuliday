@@ -60,12 +60,13 @@ $user = $res->fetch(PDO::FETCH_ASSOC);
                     <div class="field">
                         <div class="file has-name is-info">
                             <label class="file-label">
-                                <input class="file-input" type="file" name="avatar">
+                                <input class="file-input" type="file" name="avatar"
+                                       onchange="document.getElementById('myfileURL').innerHTML=this.value;">
                                 <span class="file-cta">
                                 <span class="file-icon"><i class="fas fa-upload"></i></span>
                                 <span class="file-label">Choose a file…</span>
                             </span>
-                                <span class="file-name">Screen Shot 2017-07-29 at 15.54.25.png</span>
+                                <span class="file-name" id="myfileURL"></span>
                             </label>
                         </div>
                     </div>

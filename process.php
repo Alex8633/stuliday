@@ -68,13 +68,10 @@ if ($_SERVER['REQUEST_METHOD'] != 'POST') {
         $firstname = htmlspecialchars($_POST['firstname_edit']);
         $lastname = htmlspecialchars($_POST['lastname_edit']);
         if (isset($_FILES['avatar']) && !empty($_FILES['avatar']['name'])) {
-            echo 'test2 ok';
-            var_dump($_FILES);
             $taillemax = 2097152;
             $extensionsValides = ['jpg', 'jpeg', 'gif', 'png'];
             if ($_FILES['avatar']['size'] <= $taillemax) {
                 $extensionUpload = substr(strrchr($_FILES['avatar']['type'], '/'), 1);
-                var_dump($extensionUpload);
                 if (in_array($extensionUpload, $extensionsValides)) {
                     $path = "images/avatars/" . $_SESSION['id'] . "." . $extensionUpload;
                     $resultat = move_uploaded_file($_FILES['avatar']['tmp_name'], $path);
@@ -83,7 +80,9 @@ if ($_SERVER['REQUEST_METHOD'] != 'POST') {
                         $updateavatar = $conn->prepare($sql);
                         $updateavatar->bindValue(':profil_image', $path);
                         $updateavatar->bindValue(':id', $_SESSION['id']);
-                        $updateavatar->execute();
+                        if ($updateavatar->execute()) {
+                            header('Location: profile.php');
+                        }
                     } else {
                         header('Location: editProfil.php?error=import');
                     }
@@ -94,5 +93,16 @@ if ($_SERVER['REQUEST_METHOD'] != 'POST') {
                 header('Location: editProfil.php?error=avatarsize');
             }
         }
+    }
+} elseif (isset($_POST['delete_ad'])) {
+    if (!empty($_POST['adverts_id'])) {
+        $advert_id = strip_tags($_POST['adverts_id']);
+        suppAdverts($_SESSION['id'], $advert_id);
+    }
+} elseif (isset($_POST['reserve_add'])) {
+    if (!empty($_POST['add_id'])) {
+        $add_id = intval(strip_tags($_POST['add_id']));
+        $user_id = intval($_SESSION['id']);
+        bookAdd($add_id, $user_id);
     }
 }
