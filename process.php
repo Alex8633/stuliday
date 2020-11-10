@@ -14,6 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] != 'POST') {
                     Sorry the page you request don't exist
                 </div>
           </article>";
+//    test si c'est le formulaire d'ajout d'annonce
 } elseif (isset($_POST['addAnnonce'])) {
     if (!empty($_POST['titreAnnonce']) && !empty($_POST['content']) && !empty($_POST['adressAnnonce']) &&
         !empty($_POST['cityAnnonce']) && !empty($_POST['annoncePrice'] && !empty($_POST['dateBegin']) && !empty($_POST['dateEnd']))
@@ -28,6 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] != 'POST') {
         $placeNumbers = intval(strip_tags($_POST['placeNumber']));
         addAnnonce($title, $content, $city, $address, $price, $dateBegin, $dateEnd, $placeNumbers);
     }
+    // formulaire d'inscription
 } elseif (isset($_POST['submit_signup'])) {
     if (!empty($_POST['email_signup']) && !empty($_POST['password1_signup'])
         && !empty($_POST['firstname_signup']) && !empty($_POST['lastname_signup'])) {
@@ -38,6 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] != 'POST') {
         $lastname = htmlspecialchars($_POST['lastname_signup']);
         inscription($email_su, $pass_su, $repass_su, $firstname, $lastname);
     }
+    // formulaire modification annonce
 } elseif (isset($_POST['editAnnonce'])) {
     if (!empty($_POST['titreAnnonce']) && !empty($_POST['content']) && !empty($_POST['adressAnnonce']) &&
         !empty($_POST['cityAnnonce']) && !empty($_POST['annoncePrice'] && !empty($_POST['dateBegin']) && !empty($_POST['dateEnd']))
@@ -53,12 +56,14 @@ if ($_SERVER['REQUEST_METHOD'] != 'POST') {
         $id = intval(strip_tags($_POST['advert_id']));
         editAnnonce($title, $content, $city, $address, $price, $dateBegin, $dateEnd, $id, $placeNumbers, $_SESSION['id']);
     }
+    // formulaire de login
 } elseif (isset($_POST['submit_login'])) {
     if (!empty($_POST['email_login']) && !empty($_POST['password_login'])) {
         $pass_login = htmlspecialchars($_POST['password_login']);
         $email_login = htmlspecialchars($_POST['email_login']);
         connexion($email_login, $pass_login);
     }
+    // formualire modification profil
 } elseif (isset($_POST['edit_profil'])) {
     if (!empty($_POST['email_edit']) && !empty($_POST['password1_edit'] && !empty($_POST['password2_edit']))
         && !empty($_POST['firstname_edit']) && !empty($_POST['lastname_edit'])) {
@@ -94,15 +99,25 @@ if ($_SERVER['REQUEST_METHOD'] != 'POST') {
             }
         }
     }
+    // formulaire suppression annonce
 } elseif (isset($_POST['delete_ad'])) {
     if (!empty($_POST['adverts_id'])) {
         $advert_id = strip_tags($_POST['adverts_id']);
         suppAdverts($_SESSION['id'], $advert_id);
     }
+    // formulaire pour reservation
 } elseif (isset($_POST['reserve_add'])) {
     if (!empty($_POST['add_id'])) {
         $add_id = intval(strip_tags($_POST['add_id']));
         $user_id = intval($_SESSION['id']);
         bookAdd($add_id, $user_id);
+    }
+    // cancel reservation
+} elseif (isset($_POST['cancel_book'])) {
+    if (!empty($_POST['reserv_id'])) {
+        echo 'test1 ok';
+        $reserv_id = strip_tags($_POST['reserv_id']);
+        $user_id = intval($_SESSION['id']);
+        suppReserv($reserv_id, $user_id);
     }
 }

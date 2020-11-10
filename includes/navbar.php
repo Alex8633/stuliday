@@ -34,7 +34,7 @@
                         <a class="navbar-item" href="profile.php">
                             Profile page
                         </a>
-                        <a class="navbar-item">
+                        <a class="navbar-item" href="addAnnonce.php">
                             Create a new ad
                         </a>
                         <hr class="navbar-divider">

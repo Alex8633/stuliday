@@ -6,8 +6,11 @@ $id = $_SESSION['id'];
 $sql = "SELECT profil_image FROM users WHERE id = {$id}";
 $res = $conn->query($sql);
 $imageProfil = $res->fetch(PDO::FETCH_ASSOC);
-if (!empty($_GET['book'])) {
+if (!empty($_GET['book']) && $_GET['book'] == 's') {
     echo '<div class="notification is-success"><button class="delete"></button>Booking registred !</div>';
+} elseif (!empty($_GET['book']) && $_GET['book'] == 'del') {
+    echo '<div class="notification is-warning"><button class="delete"></button>Booking delete !</div>';
+
 }
 ?>
 

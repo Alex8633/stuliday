@@ -75,7 +75,7 @@ function addAnnonce($title, $content, $city, $address, $price, $dateBegin, $date
                 $sth->bindValue(':author', $_SESSION['id']);
                 if ($sth->execute()) {
                     header('Location: advertAdd.php');
-                };
+                }
             } catch (PDOException $e) {
                 echo 'Error' . $e->getMessage();
             }
@@ -94,7 +94,7 @@ function showAnnonces()
     $sth = $conn->prepare('SELECT a.*, u.nom, u.prenom FROM adverts AS a LEFT JOIN users u on a.author = u.id');
     $sth->execute();
     $adverts = $sth->fetchAll(PDO::FETCH_ASSOC);
-    printAnnonces($adverts);
+    printAnnonces($adverts, false);
 }
 
 // affiche les annonces par utilisateur en fonction de son id
@@ -107,11 +107,11 @@ function showAnnoncesByUsuer($id)
                                     WHERE author = {$id}");
     $sth->execute();
     $adverts = $sth->fetchAll(PDO::FETCH_ASSOC);
-    printAnnonces($adverts);
+    printAnnonces($adverts, false);
 }
 
 // création des "cards" annonces
-function printAnnonces($adverts)
+function printAnnonces($adverts, $book)
 {
     foreach ($adverts as $advert) {
         ?>
@@ -131,6 +131,16 @@ function printAnnonces($adverts)
             </div>
             <div class="annonce-lien">
                 <a href="viewAnnonce.php?id=<?php echo $advert['ad_id']; ?>" class="button is-primary">show Annonce</a>
+
+                <?php if ($book) { ?>
+                    <form action="process.php" method="post">
+                        <input type="hidden" name="reserv_id" value="<?= $advert['reserv_id'] ?>">
+                        <button type="submit" name="cancel_book" class="button is-danger">Cancel
+                            Booking
+                        </button>
+                    </form>
+
+                <?php } ?>
                 <!-- affichage du bouton edit annonce seulement pour les annonces de l'utilisateur connecté -->
                 <?php if (!empty($_SESSION) && $advert['author'] == $_SESSION['id']) { ?>
                     <a href="editAnnonce.php?id=<?php echo $advert['ad_id']; ?>" class="button is-primary">Edit
@@ -175,18 +185,6 @@ function editAnnonce($title, $content, $city, $address, $price, $dateBegin, $dat
     } else {
         header("Location: editAnnonce.php?error=price&id={$id}");
     }
-}
-
-// affiche les informations pour une annonce
-function showAnnonce($id)
-{
-    global $conn;
-    $sth = $conn->prepare("SELECT * 
-                                    FROM adverts
-                                    WHERE ad_id = $id");
-    $sth->execute();
-    $annonce = $sth->fetch(PDO::FETCH_ASSOC);
-    var_dump($annonce);
 }
 
 function suppAdverts($user_id, $ad_id)
@@ -235,7 +233,20 @@ function showBook($id)
         $sth = $conn->prepare($sql);
         $sth->execute();
         $adverts = $sth->fetchAll(PDO::FETCH_ASSOC);
-        printAnnonces($adverts);
+        printAnnonces($adverts, true);
+    } catch (PDOException $e) {
+        echo 'Error: ' . $e->getMessage();
+    }
+}
+
+function suppReserv($reserv_id, $user_id)
+{
+    global $conn;
+    try {
+        $sql = "DELETE FROM reservations WHERE reserv_id = {$reserv_id} AND users_id = {$user_id}";
+        if ($conn->query($sql)) {
+            header('Location: profile.php?book=del');
+        }
     } catch (PDOException $e) {
         echo 'Error: ' . $e->getMessage();
     }
